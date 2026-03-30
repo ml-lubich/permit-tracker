@@ -1,28 +1,37 @@
+export interface Profile {
+  id: string;
+  email: string;
+  full_name: string | null;
+  company_name: string | null;
+  phone: string | null;
+}
+
 export interface Permit {
   id: string;
   user_id: string;
   permit_number: string;
-  permit_type: string;
-  jurisdiction: string;
+  project_name: string;
   project_address: string;
-  issue_date: string;
-  expiration_date: string;
-  notes: string;
-  status: "active" | "expiring_soon" | "expired";
+  permit_type: string;
+  status: string;
+  submitted_date: string | null;
+  approved_date: string | null;
+  expiry_date: string | null;
+  inspector: string | null;
+  notes: string | null;
+  fee_amount: number | null;
   created_at: string;
   updated_at: string;
 }
 
-export type PermitInsert = Omit<Permit, "id" | "user_id" | "status" | "created_at" | "updated_at">;
-
-export interface Notification {
+export interface Inspection {
   id: string;
   permit_id: string;
-  type: "expiring_soon" | "expired" | "renewal_reminder";
-  message: string;
-  read: boolean;
+  inspection_type: string;
+  scheduled_date: string | null;
+  result: string | null;
+  inspector_notes: string | null;
   created_at: string;
-  permit?: Permit;
 }
 
 export const PERMIT_TYPES = [
@@ -36,5 +45,26 @@ export const PERMIT_TYPES = [
   "Fire Alarm Permit",
   "Sign Permit",
   "Fence Permit",
+  "Other",
+] as const;
+
+export const PERMIT_STATUSES = [
+  "pending",
+  "submitted",
+  "in_review",
+  "approved",
+  "denied",
+  "expired",
+] as const;
+
+export const INSPECTION_TYPES = [
+  "Foundation",
+  "Framing",
+  "Electrical Rough-in",
+  "Plumbing Rough-in",
+  "Mechanical",
+  "Insulation",
+  "Drywall",
+  "Final",
   "Other",
 ] as const;

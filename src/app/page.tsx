@@ -210,7 +210,6 @@ function Footer() {
             </span>
           </div>
           <div className="flex gap-6 text-sm text-muted">
-            <Link href="/pricing" className="hover:text-foreground transition-colors">Pricing</Link>
             <Link href="/login" className="hover:text-foreground transition-colors">Log In</Link>
             <Link href="/signup" className="hover:text-foreground transition-colors">Sign Up</Link>
           </div>

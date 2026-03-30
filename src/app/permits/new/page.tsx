@@ -3,20 +3,23 @@
 import { useState } from "react";
 import { useRouter } from "next/navigation";
 import { Navbar } from "@/components/Navbar";
-import { PERMIT_TYPES } from "@/lib/types";
+import { PERMIT_TYPES, PERMIT_STATUSES } from "@/lib/types";
+import { createPermit } from "@/lib/actions";
 
 export default function NewPermitPage() {
   const router = useRouter();
+  const [error, setError] = useState("");
   const [loading, setLoading] = useState(false);
 
-  const handleSubmit = (e: React.FormEvent<HTMLFormElement>) => {
-    e.preventDefault();
+  async function handleSubmit(formData: FormData) {
     setLoading(true);
-    // Demo mode — just redirect back to dashboard
-    setTimeout(() => {
-      router.push("/dashboard");
-    }, 500);
-  };
+    setError("");
+    const result = await createPermit(formData);
+    if (result?.error) {
+      setError(result.error);
+      setLoading(false);
+    }
+  }
 
   return (
     <>
@@ -25,11 +28,17 @@ export default function NewPermitPage() {
         <div className="mb-8">
           <h1 className="text-2xl font-bold">Add New Permit</h1>
           <p className="text-muted text-sm mt-1">
-            Enter the permit details to start tracking deadlines
+            Enter the permit details to start tracking
           </p>
         </div>
 
-        <form onSubmit={handleSubmit} className="bg-card-bg border border-card-border rounded-xl p-6 space-y-6">
+        <form action={handleSubmit} className="bg-card-bg border border-card-border rounded-xl p-6 space-y-6">
+          {error && (
+            <div className="bg-danger/10 border border-danger/20 text-danger text-sm rounded-lg p-3">
+              {error}
+            </div>
+          )}
+
           <div className="grid grid-cols-1 sm:grid-cols-2 gap-6">
             <div>
               <label htmlFor="permit_number" className="block text-sm font-medium mb-1.5">
@@ -57,26 +66,43 @@ export default function NewPermitPage() {
               >
                 <option value="">Select type...</option>
                 {PERMIT_TYPES.map((type) => (
-                  <option key={type} value={type}>
-                    {type}
-                  </option>
+                  <option key={type} value={type}>{type}</option>
                 ))}
               </select>
             </div>
           </div>
 
-          <div>
-            <label htmlFor="jurisdiction" className="block text-sm font-medium mb-1.5">
-              Jurisdiction *
-            </label>
-            <input
-              id="jurisdiction"
-              name="jurisdiction"
-              type="text"
-              required
-              placeholder="e.g. City of Austin, TX"
-              className="w-full bg-background border border-card-border rounded-lg px-4 py-2.5 text-sm focus:outline-none focus:border-orange transition-colors"
-            />
+          <div className="grid grid-cols-1 sm:grid-cols-2 gap-6">
+            <div>
+              <label htmlFor="project_name" className="block text-sm font-medium mb-1.5">
+                Project Name *
+              </label>
+              <input
+                id="project_name"
+                name="project_name"
+                type="text"
+                required
+                placeholder="e.g. Oak Street Renovation"
+                className="w-full bg-background border border-card-border rounded-lg px-4 py-2.5 text-sm focus:outline-none focus:border-orange transition-colors"
+              />
+            </div>
+
+            <div>
+              <label htmlFor="status" className="block text-sm font-medium mb-1.5">
+                Status
+              </label>
+              <select
+                id="status"
+                name="status"
+                className="w-full bg-background border border-card-border rounded-lg px-4 py-2.5 text-sm focus:outline-none focus:border-orange transition-colors"
+              >
+                {PERMIT_STATUSES.map((s) => (
+                  <option key={s} value={s}>
+                    {s === "in_review" ? "In Review" : s.charAt(0).toUpperCase() + s.slice(1)}
+                  </option>
+                ))}
+              </select>
+            </div>
           </div>
 
           <div>
@@ -93,29 +119,69 @@ export default function NewPermitPage() {
             />
           </div>
 
-          <div className="grid grid-cols-1 sm:grid-cols-2 gap-6">
+          <div className="grid grid-cols-1 sm:grid-cols-3 gap-6">
             <div>
-              <label htmlFor="issue_date" className="block text-sm font-medium mb-1.5">
-                Issue Date *
+              <label htmlFor="submitted_date" className="block text-sm font-medium mb-1.5">
+                Submitted Date
               </label>
               <input
-                id="issue_date"
-                name="issue_date"
+                id="submitted_date"
+                name="submitted_date"
                 type="date"
-                required
                 className="w-full bg-background border border-card-border rounded-lg px-4 py-2.5 text-sm focus:outline-none focus:border-orange transition-colors"
               />
             </div>
 
             <div>
-              <label htmlFor="expiration_date" className="block text-sm font-medium mb-1.5">
-                Expiration Date *
+              <label htmlFor="approved_date" className="block text-sm font-medium mb-1.5">
+                Approved Date
               </label>
               <input
-                id="expiration_date"
-                name="expiration_date"
+                id="approved_date"
+                name="approved_date"
                 type="date"
-                required
+                className="w-full bg-background border border-card-border rounded-lg px-4 py-2.5 text-sm focus:outline-none focus:border-orange transition-colors"
+              />
+            </div>
+
+            <div>
+              <label htmlFor="expiry_date" className="block text-sm font-medium mb-1.5">
+                Expiry Date
+              </label>
+              <input
+                id="expiry_date"
+                name="expiry_date"
+                type="date"
+                className="w-full bg-background border border-card-border rounded-lg px-4 py-2.5 text-sm focus:outline-none focus:border-orange transition-colors"
+              />
+            </div>
+          </div>
+
+          <div className="grid grid-cols-1 sm:grid-cols-2 gap-6">
+            <div>
+              <label htmlFor="inspector" className="block text-sm font-medium mb-1.5">
+                Inspector
+              </label>
+              <input
+                id="inspector"
+                name="inspector"
+                type="text"
+                placeholder="Inspector name"
+                className="w-full bg-background border border-card-border rounded-lg px-4 py-2.5 text-sm focus:outline-none focus:border-orange transition-colors"
+              />
+            </div>
+
+            <div>
+              <label htmlFor="fee_amount" className="block text-sm font-medium mb-1.5">
+                Fee Amount ($)
+              </label>
+              <input
+                id="fee_amount"
+                name="fee_amount"
+                type="number"
+                step="0.01"
+                min="0"
+                placeholder="0.00"
                 className="w-full bg-background border border-card-border rounded-lg px-4 py-2.5 text-sm focus:outline-none focus:border-orange transition-colors"
               />
             </div>
@@ -128,8 +194,8 @@ export default function NewPermitPage() {
             <textarea
               id="notes"
               name="notes"
-              rows={4}
-              placeholder="Any additional details about this permit..."
+              rows={3}
+              placeholder="Any additional details..."
               className="w-full bg-background border border-card-border rounded-lg px-4 py-2.5 text-sm focus:outline-none focus:border-orange transition-colors resize-none"
             />
           </div>

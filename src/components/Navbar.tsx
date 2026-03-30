@@ -2,6 +2,7 @@
 
 import Link from "next/link";
 import { usePathname } from "next/navigation";
+import { signOut } from "@/lib/actions";
 
 export function Navbar({ isLoggedIn = false }: { isLoggedIn?: boolean }) {
   const pathname = usePathname();
@@ -24,8 +25,6 @@ export function Navbar({ isLoggedIn = false }: { isLoggedIn?: boolean }) {
               {[
                 { href: "/dashboard", label: "Dashboard" },
                 { href: "/permits/new", label: "Add Permit" },
-                { href: "/calendar", label: "Calendar" },
-                { href: "/notifications", label: "Notifications" },
               ].map((link) => (
                 <Link
                   key={link.href}
@@ -39,21 +38,17 @@ export function Navbar({ isLoggedIn = false }: { isLoggedIn?: boolean }) {
                   {link.label}
                 </Link>
               ))}
-              <Link
-                href="/"
-                className="ml-4 px-3 py-2 rounded-lg text-sm font-medium text-muted hover:text-foreground hover:bg-white/5 transition-colors"
-              >
-                Sign Out
-              </Link>
+              <form action={signOut}>
+                <button
+                  type="submit"
+                  className="ml-4 px-3 py-2 rounded-lg text-sm font-medium text-muted hover:text-foreground hover:bg-white/5 transition-colors"
+                >
+                  Sign Out
+                </button>
+              </form>
             </div>
           ) : (
             <div className="flex items-center gap-3">
-              <Link
-                href="/pricing"
-                className="text-sm text-muted hover:text-foreground transition-colors"
-              >
-                Pricing
-              </Link>
               <Link
                 href="/login"
                 className="text-sm text-muted hover:text-foreground transition-colors"
