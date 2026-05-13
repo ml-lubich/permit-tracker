@@ -37,7 +37,50 @@ flowchart LR
 
 - [Stack](#stack)
 - [Architecture](#architecture)
+- [Permit lifecycle (state)](#permit-lifecycle-state)
+- [Notification scheduler (algorithm)](#notification-scheduler-algorithm)
 - [Getting Started](#getting-started)
+
+## Permit lifecycle (state)
+
+```mermaid
+stateDiagram-v2
+    [*] --> ACTIVE: permit added
+    ACTIVE --> EXPIRING_30: 30 days out
+    EXPIRING_30 --> EXPIRING_14: 14 days out
+    EXPIRING_14 --> EXPIRING_7: 7 days out
+    EXPIRING_7 --> EXPIRED: deadline passed
+    EXPIRING_30 --> RENEWED: renewal filed
+    EXPIRING_14 --> RENEWED
+    EXPIRING_7 --> RENEWED
+    EXPIRED --> RENEWED: late renewal
+    RENEWED --> ACTIVE
+    EXPIRED --> [*]
+```
+
+## Notification scheduler (algorithm)
+
+```mermaid
+flowchart LR
+    A([cron tick / hourly])
+    B["SELECT permits<br/>WHERE expiry within window"]
+    C{"30 / 14 / 7 day?"}
+    D["build email body"]
+    E["build SMS body"]
+    F["send email"]
+    G["send SMS"]
+    H["insert notifications row"]
+    I{"expired now?"}
+    J["mark EXPIRED"]
+    Z([end tick])
+    A --> B --> C
+    C -- match --> D --> F --> H
+    C -- match --> E --> G --> H
+    C -- none --> I
+    H --> I
+    I -- yes --> J --> Z
+    I -- no  --> Z
+```
 
 ## Stack
 
