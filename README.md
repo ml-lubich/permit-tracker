@@ -40,6 +40,7 @@ flowchart LR
 - [Permit lifecycle (state)](#permit-lifecycle-state)
 - [Notification scheduler (algorithm)](#notification-scheduler-algorithm)
 - [Getting Started](#getting-started)
+- [🗺️ Repository map](#️-repository-map)
 
 ## Permit lifecycle (state)
 
@@ -105,3 +106,31 @@ npm run dev
 ```
 
 Open [http://localhost:3000](http://localhost:3000).
+
+
+## 🗺️ Repository map
+
+Top-level layout of `permit-tracker` rendered as a Mermaid mindmap (auto-generated from the on-disk tree).
+
+```mermaid
+mindmap
+  root((permit-tracker))
+    public/
+      file.svg
+      globe.svg
+      next.svg
+      vercel.svg
+      window.svg
+    src/
+      app
+      components
+      lib
+      proxy.ts
+    supabase/
+      migrations
+    files
+      README.md
+      next.config.ts
+      package.json
+      tsconfig.json
+```
