@@ -41,6 +41,7 @@ flowchart LR
 - [Notification scheduler (algorithm)](#notification-scheduler-algorithm)
 - [Getting Started](#getting-started)
 - [🗺️ Repository map](#️-repository-map)
+- [📊 Code composition](#-code-composition)
 
 ## Permit lifecycle (state)
 
@@ -133,4 +134,21 @@ mindmap
       next.config.ts
       package.json
       tsconfig.json
+```
+
+
+## 📊 Code composition
+
+File-type breakdown of source under this repo (skips `.git`, `node_modules`, build caches, lockfiles).
+
+```mermaid
+pie showData title File-type composition of permit-tracker (34 files)
+    "TypeScript" : 18
+    "SVG image" : 5
+    "Markdown" : 4
+    "JavaScript" : 2
+    "JSON" : 2
+    "SQL" : 1
+    "Image" : 1
+    "CSS" : 1
 ```
